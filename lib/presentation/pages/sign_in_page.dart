@@ -6,7 +6,7 @@ import '../cubits/models_status.dart';
 import '../widgets/snack_bar.dart';
 
 class SignInPage extends StatelessWidget {
-   SignInPage({Key? key}) : super(key: key);
+  SignInPage({Key? key}) : super(key: key);
 
   final _formKey = GlobalKey<FormState>();
 
@@ -28,7 +28,7 @@ class SignInPage extends StatelessWidget {
                 SnackBarInfo.show(
                   context: context,
                   message: state.apiStatus.item.toString(),
-                  isSuccess: false,
+                  isSuccess: true,
                 );
               }
             },
@@ -72,15 +72,27 @@ class SignInPage extends StatelessWidget {
                           ),
                           const SizedBox(height: 40),
                           BlocBuilder<AuthCubit, AuthState>(
-                            builder: (context, state) {
+                            builder: (context2, state) {
                               return ElevatedButton(
                                 onPressed: () {
                                   if (!_formKey.currentState!.validate()) {
                                     return;
                                   }
-                                  context.read<AuthCubit>().signIn();
-                                  Navigator.of(context)
-                                      .pushReplacementNamed('/profile');
+                                  context2
+                                      .read<AuthCubit>()
+                                      .signIn()
+                                      .then((error) {
+                                    if (error == null) {
+                                      Navigator.of(context).pushNamed('/profile');
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text(error),
+                                        ),
+                                      );
+                                    }
+                                  });
                                 },
                                 child: state.apiStatus is LoadedStatus
                                     ? const CircularProgressIndicator()

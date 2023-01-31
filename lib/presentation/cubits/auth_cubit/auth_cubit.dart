@@ -7,7 +7,7 @@ part 'auth_state.dart';
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(AuthState());
 
-  Future<void> signUp() async {
+  Future<String?> signUp() async {
     final repository = AppModule.getAuthRepository();
     emit(state.copyWith(apiStatus: LoadingStatus()));
     try {
@@ -25,12 +25,14 @@ class AuthCubit extends Cubit<AuthState> {
       AppModule.getPreferencesRepository().saveApiToken(token.data!);
 
       emit(state.copyWith(apiStatus: LoadedStatus(token.data!)));
+      return (null);
     } catch (exception) {
       emit(state.copyWith(apiStatus: FailedStatus(exception.toString())));
+      return (exception.toString());
     }
   }
 
-  Future<void> signIn() async {
+  Future<String?> signIn() async {
     final repository = AppModule.getAuthRepository();
     emit(state.copyWith(apiStatus: LoadingStatus()));
     try {
@@ -43,12 +45,16 @@ class AuthCubit extends Cubit<AuthState> {
         );
       }
       AppModule.getTokenHolder().apiToken = token.data!;
-      AppModule.getPreferencesRepository().saveApiToken(token.data!);
+      await AppModule.getPreferencesRepository().saveApiToken(token.data!);
       print('token: ${token.data!}');
+
       emit(state.copyWith(apiStatus: LoadedStatus(token.data!)));
+      return (null);
     } catch (exception) {
       print(exception);
+
       emit(state.copyWith(apiStatus: FailedStatus(exception.toString())));
+      return exception.toString();
     }
   }
 

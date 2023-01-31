@@ -98,7 +98,20 @@ class SignUpPage extends StatelessWidget {
                                   if (!_formKey.currentState!.validate()) {
                                     return;
                                   }
-                                  context.read<AuthCubit>().signUp();
+                                  context.read<AuthCubit>().signUp().then((error) {
+                                    if (error == null) {
+                                      Navigator.pushReplacementNamed(
+                                        context,
+                                        "/profile",
+                                      );
+                                    } else {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(error),
+                                        ),
+                                      );
+                                    }
+                                  });
                                   Navigator.of(context)
                                       .pushReplacementNamed('/profile');
                                 },

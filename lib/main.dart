@@ -68,8 +68,8 @@ class MyApp extends StatelessWidget {
             // fontFamily: GoogleFonts.notoSans().fontFamily,
           ),
           routes: {
-            '/sign-up': (context) => BlocProvider<AuthCubit>(
-                  create: (context) => AuthCubit(),
+            '/sign-up': (context) => BlocProvider<AuthCubit>.value(
+                  value:AuthCubit(),
                   child: SignUpPage(),
                 ),
             '/sign-in': (context) => BlocProvider<AuthCubit>.value(
